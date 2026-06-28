@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overview - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="overview" class="page active">
+<div class="page-header">
+                    <h2>Overview</h2>
+                </div>
+                <div class="overview-banner">
+                    <h3>School Activities Summary</h3>
+                    <p>Current overview of sections, schedules, and active members.</p>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>School</th>
+                                <th>Section</th>
+                                <th>Student IDs</th>
+                                <th>Class Name</th>
+                                <th>Course</th>
+                                <th>Fees Paid</th>
+                                <th>Timing</th>
+                                <th>Teacher</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overview-body"></tbody>
+                    </table>
+                </div>
+                <div class="overview-panels">
+                    <div class="overview-panel">
+                        <h4>Students</h4>
+                        <div id="overview-students-panel"></div>
+                    </div>
+                    <div class="overview-panel">
+                        <h4>Teachers</h4>
+                        <div id="overview-teachers-panel"></div>
+                    </div>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

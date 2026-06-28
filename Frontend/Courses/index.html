@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="courses" class="page active">
+<div class="page-header">
+                    <h2>Courses Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="courses-search" placeholder="Search courses...">
+                        <button class="primary-btn" id="add-course-button">Add Course</button>
+                    </div>
+                </div>
+                <div id="course-form-panel" class="form-panel hidden">
+                    <h3>Course Details</h3>
+                    <div class="form-row">
+                        <input type="text" id="course-name" placeholder="Course Name" />
+                        <input type="number" id="course-credits" placeholder="Credits" />
+                    </div>
+                    <div class="form-row" style="grid-template-columns: 1fr;">
+                        <input type="text" id="course-description" placeholder="Description" />
+                    </div>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="course-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="course-submit-button">Save</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Course Name</th>
+                                <th>Description</th>
+                                <th>Credits</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courses-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

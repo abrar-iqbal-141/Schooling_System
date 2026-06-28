@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enrollments - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="enrollments" class="page active">
+<div class="page-header">
+                    <h2>Enrollments Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="enrollments-search" placeholder="Search enrollments...">
+                        <button class="primary-btn" id="add-enrollment-button">Add Enrollment</button>
+                    </div>
+                </div>
+                <div id="enrollment-form-panel" class="form-panel hidden">
+                    <h3>Enrollment Details</h3>
+                    <div class="form-row">
+                        <select id="enrollment-student-id"><option value="">Select Student</option></select>
+                        <select id="enrollment-course-id"><option value="">Select Course</option></select>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="enrollment-grade" placeholder="Grade" />
+                        <input type="date" id="enrollment-date" />
+                    </div>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="enrollment-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="enrollment-submit-button">Save</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student Name</th>
+                                <th>Course Name</th>
+                                <th>Grade</th>
+                                <th>Enrollment Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="enrollments-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

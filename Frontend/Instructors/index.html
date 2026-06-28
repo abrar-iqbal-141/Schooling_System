@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructors - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="instructors" class="page active">
+<div class="page-header">
+                    <h2>Instructors Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="instructors-search" placeholder="Search instructors...">
+                        <button class="primary-btn" id="add-instructor-button">Add Instructor</button>
+                    </div>
+                </div>
+                <div id="instructor-form-panel" class="form-panel hidden">
+                    <h3>Instructor Details</h3>
+                    <div class="form-row">
+                        <input type="text" id="instructor-name" placeholder="Name" />
+                        <input type="email" id="instructor-email" placeholder="Email" />
+                    </div>
+                    <div class="form-row">
+                        <select id="instructor-gender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="instructor-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="instructor-submit-button">Save</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="instructors-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

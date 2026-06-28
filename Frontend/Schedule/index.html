@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="schedule" class="page active">
+<div class="page-header">
+                    <h2>Schedule Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="schedule-search" placeholder="Search schedule...">
+                        <button class="primary-btn" id="add-schedule-button">Add Schedule</button>
+                    </div>
+                </div>
+                <div id="schedule-form-panel" class="form-panel hidden">
+                    <h3>Schedule Details</h3>
+                    <div class="form-row">
+                        <select id="schedule-teacher-id"><option value="">Select Teacher</option></select>
+                        <select id="schedule-course-id"><option value="">Select Subject</option></select>
+                    </div>
+                    <div class="form-row">
+                        <select id="schedule-section-id"><option value="">Select Section</option></select>
+                        <select id="schedule-day">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="time" id="schedule-time" />
+                    </div>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="schedule-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="schedule-submit-button">Save</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Teacher</th>
+                                <th>Subject</th>
+                                <th>Section</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedule-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

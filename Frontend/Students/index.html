@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="students" class="page active">
+<div class="page-header">
+                    <h2>Students Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="students-search" placeholder="Search students...">
+                        <button class="primary-btn" id="add-student-button">Add Student</button>
+                        <button class="secondary-btn" onclick="showDefaultersList()">Show Defaulters</button>
+                    </div>
+                </div>
+                <div id="defaulters-panel" class="defaulters-panel hidden"></div>
+                <div id="student-form-panel" class="form-panel hidden">
+                    <h3>Student Details</h3>
+                    <div class="form-row">
+                        <input type="text" id="student-name" placeholder="Name" />
+                        <input type="email" id="student-email" placeholder="Email" />
+                    </div>
+                    <div class="form-row">
+                        <select id="student-gender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <input type="date" id="student-dob" placeholder="Date of Birth" />
+                    </div>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="student-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="student-submit-button">Save</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Fee Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

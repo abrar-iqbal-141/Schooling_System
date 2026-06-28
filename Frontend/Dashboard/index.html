@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="dashboard" class="page active">
+<div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Total Students</div>
+                            <div class="stat-number" id="total-students">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Instructors</div>
+                            <div class="stat-number" id="total-instructors">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏛️</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Departments</div>
+                            <div class="stat-number" id="total-departments">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Courses</div>
+                            <div class="stat-number" id="total-courses">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <div>
+                            <p class="chart-label">Overview</p>
+                            <h3>Population Distribution</h3>
+                        </div>
+                    </div>
+                    <div><canvas id="dashboard-chart"></canvas></div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="mini-chart-card">
+                        <div class="mini-chart-header">
+                            <h4>Students</h4>
+                            <span class="mini-chart-count" id="chart-students-count">0</span>
+                        </div>
+                        <div><canvas id="chart-students"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mini-chart-header">
+                            <h4>Instructors</h4>
+                            <span class="mini-chart-count" id="chart-instructors-count">0</span>
+                        </div>
+                        <div><canvas id="chart-instructors"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mini-chart-header">
+                            <h4>Departments</h4>
+                            <span class="mini-chart-count" id="chart-departments-count">0</span>
+                        </div>
+                        <div><canvas id="chart-departments"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mini-chart-header">
+                            <h4>Sections</h4>
+                            <span class="mini-chart-count" id="chart-sections-count">0</span>
+                        </div>
+                        <div><canvas id="chart-sections"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mini-chart-header">
+                            <h4>Courses</h4>
+                            <span class="mini-chart-count" id="chart-courses-count">0</span>
+                        </div>
+                        <div><canvas id="chart-courses"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mini-chart-header">
+                            <h4>Enrollments</h4>
+                            <span class="mini-chart-count" id="chart-enrollments-count">0</span>
+                        </div>
+                        <div><canvas id="chart-enrollments"></canvas></div>
+                    </div>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

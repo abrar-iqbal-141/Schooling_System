@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sections - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="sections" class="page active">
+<div class="page-header">
+                    <h2>Sections Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="sections-search" placeholder="Search sections...">
+                        <button class="primary-btn" id="add-section-button">Add Section</button>
+                    </div>
+                </div>
+                <div id="section-form-panel" class="form-panel hidden">
+                    <h3>Section Details</h3>
+                    <div class="form-row">
+                        <input type="text" id="section-id" placeholder="Section ID (Required)" />
+                        <input type="text" id="section-name" placeholder="Section Name" />
+                    </div>
+                    <div class="form-row">
+                        <select id="section-instructor-id"><option value="">Select Instructor</option></select>
+                        <select id="section-course-id"><option value="">Select Course</option></select>
+                    </div>
+                    <div class="form-row">
+                        <select id="section-students" multiple class="multi-select" style="min-height: 100px;"></select>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">Hold Ctrl/Cmd to select multiple students.</p>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="section-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="section-submit-button">Save</button>
+                    </div>
+                    <div id="section-save-message" class="save-message hidden"></div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Section Name</th>
+                                <th>Instructor</th>
+                                <th>Course</th>
+                                <th>Students Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sections-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>

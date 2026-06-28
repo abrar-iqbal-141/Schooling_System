@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Departments - Admin Portal</title>
+    <link rel="stylesheet" href="../navbar/style.css">
+
+</head>
+<body>
+    <div id="page-content" style="display: none;">
+        <div id="departments" class="page active">
+<div class="page-header">
+                    <h2>Departments Management</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-input" id="departments-search" placeholder="Search departments...">
+                        <button class="primary-btn" id="add-department-button">Add Department</button>
+                    </div>
+                </div>
+                <div id="department-form-panel" class="form-panel hidden">
+                    <h3>Department Details</h3>
+                    <div class="form-row">
+                        <input type="text" id="department-name" placeholder="Department Name" />
+                        <input type="text" id="department-building" placeholder="Building" />
+                    </div>
+                    <div class="form-actions">
+                        <button class="secondary-btn" id="department-cancel-button">Cancel</button>
+                        <button class="primary-btn" id="department-submit-button">Save</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Department Name</th>
+                                <th>Building</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="departments-body"></tbody>
+                    </table>
+                </div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../navbar/layout.js"></script>
+    <script src="../scripts/app.js"></script>
+
+</body>
+</html>
