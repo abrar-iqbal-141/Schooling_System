@@ -21,16 +21,20 @@
                 <div id="student-form-panel" class="form-panel hidden">
                     <h3>Student Details</h3>
                     <div class="form-row">
+                        <input type="number" id="student-id" placeholder="Student ID (4-digits, e.g. 1001)" />
                         <input type="text" id="student-name" placeholder="Name" />
-                        <input type="email" id="student-email" placeholder="Email" />
                     </div>
                     <div class="form-row">
+                        <input type="email" id="student-email" placeholder="Email" />
                         <select id="student-gender">
                             <option value="">Select Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
+                    </div>
+                    <div class="form-row">
                         <input type="date" id="student-dob" placeholder="Date of Birth" />
+                        <div></div>
                     </div>
                     <div class="form-actions">
                         <button class="secondary-btn" id="student-cancel-button">Cancel</button>
@@ -45,6 +49,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Fee Status</th>
+                                <th>Defaulter</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>

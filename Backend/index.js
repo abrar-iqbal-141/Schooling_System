@@ -39,11 +39,19 @@ app.get('/api/instructors', async (req, res) => {
 
 app.post('/api/instructors', async (req, res) => {
     try {
-        const { name, email, gender } = req.body;
-        const result = await pool.query(
-            'INSERT INTO instructors (name, email, gender) VALUES ($1, $2, $3) RETURNING *;',
-            [name, email, gender]
-        );
+        const { id, name, email, gender } = req.body;
+        let result;
+        if (id) {
+            result = await pool.query(
+                'INSERT INTO instructors (id, name, email, gender) VALUES ($1, $2, $3, $4) RETURNING *;',
+                [id, name, email, gender]
+            );
+        } else {
+            result = await pool.query(
+                'INSERT INTO instructors (name, email, gender) VALUES ($1, $2, $3) RETURNING *;',
+                [name, email, gender]
+            );
+        }
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') {
@@ -67,11 +75,19 @@ app.get('/api/students', async (req, res) => {
 
 app.post('/api/students', async (req, res) => {
     try {
-        const { name, email, gender, date_of_birth } = req.body;
-        const result = await pool.query(
-            'INSERT INTO students (name, email, gender, date_of_birth) VALUES ($1, $2, $3, $4) RETURNING *;',
-            [name, email, gender, date_of_birth]
-        );
+        const { id, name, email, gender, date_of_birth } = req.body;
+        let result;
+        if (id) {
+            result = await pool.query(
+                'INSERT INTO students (id, name, email, gender, date_of_birth) VALUES ($1, $2, $3, $4, $5) RETURNING *;',
+                [id, name, email, gender, date_of_birth]
+            );
+        } else {
+            result = await pool.query(
+                'INSERT INTO students (name, email, gender, date_of_birth) VALUES ($1, $2, $3, $4) RETURNING *;',
+                [name, email, gender, date_of_birth]
+            );
+        }
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') {
@@ -95,11 +111,19 @@ app.get('/api/courses', async (req, res) => {
 
 app.post('/api/courses', async (req, res) => {
     try {
-        const { course_name, description, credits } = req.body;
-        const result = await pool.query(
-            'INSERT INTO courses (course_name, description, credits) VALUES ($1, $2, $3) RETURNING *;',
-            [course_name, description, credits]
-        );
+        const { id, course_name, description, credits } = req.body;
+        let result;
+        if (id) {
+            result = await pool.query(
+                'INSERT INTO courses (id, course_name, description, credits) VALUES ($1, $2, $3, $4) RETURNING *;',
+                [id, course_name, description, credits]
+            );
+        } else {
+            result = await pool.query(
+                'INSERT INTO courses (course_name, description, credits) VALUES ($1, $2, $3) RETURNING *;',
+                [course_name, description, credits]
+            );
+        }
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') {
@@ -129,11 +153,19 @@ app.get('/api/enrollments', async (req, res) => {
 
 app.post('/api/departments', async (req, res) => {
     try {
-        const { department_name, building } = req.body;
-        const result = await pool.query(
-            'INSERT INTO departments (department_name, building) VALUES ($1, $2) RETURNING *;',
-            [department_name, building]
-        );
+        const { id, department_name, building } = req.body;
+        let result;
+        if (id) {
+            result = await pool.query(
+                'INSERT INTO departments (id, department_name, building) VALUES ($1, $2, $3) RETURNING *;',
+                [id, department_name, building]
+            );
+        } else {
+            result = await pool.query(
+                'INSERT INTO departments (department_name, building) VALUES ($1, $2) RETURNING *;',
+                [department_name, building]
+            );
+        }
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') {
@@ -148,11 +180,19 @@ app.post('/api/departments', async (req, res) => {
 
 app.post('/api/enrollments', async (req, res) => {
     try {
-        const { student_id, course_id, grade, enrollment_date } = req.body;
-        const result = await pool.query(
-            'INSERT INTO enrollments (student_id, course_id, grade, enrollment_date) VALUES ($1, $2, $3, $4) RETURNING *;',
-            [student_id, course_id, grade, enrollment_date]
-        );
+        const { id, student_id, course_id, grade, enrollment_date } = req.body;
+        let result;
+        if (id) {
+            result = await pool.query(
+                'INSERT INTO enrollments (id, student_id, course_id, grade, enrollment_date) VALUES ($1, $2, $3, $4, $5) RETURNING *;',
+                [id, student_id, course_id, grade, enrollment_date]
+            );
+        } else {
+            result = await pool.query(
+                'INSERT INTO enrollments (student_id, course_id, grade, enrollment_date) VALUES ($1, $2, $3, $4) RETURNING *;',
+                [student_id, course_id, grade, enrollment_date]
+            );
+        }
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') {

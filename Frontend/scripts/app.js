@@ -86,6 +86,40 @@ function toggleStudentFeeStatus(studentId, paid) {
         student.fee_status = Boolean(paid);
     }
     renderStudentsTable();
+    if (typeof renderDefaultersPage === 'function' && document.getElementById('defaulters-body')) {
+        renderDefaultersPage();
+    }
+}
+
+
+function getStudentDefaulterStatus(studentId) {
+    const raw = localStorage.getItem('school-defaulter-status');
+    if (!raw) return false;
+    try {
+        const state = JSON.parse(raw);
+        return Boolean(state[String(studentId)]);
+    } catch (error) {
+        return false;
+    }
+}
+
+function setStudentDefaulterStatus(studentId, isDefaulter) {
+    const raw = localStorage.getItem('school-defaulter-status');
+    const state = raw ? JSON.parse(raw) : {};
+    state[String(studentId)] = Boolean(isDefaulter);
+    localStorage.setItem('school-defaulter-status', JSON.stringify(state));
+}
+
+function toggleStudentDefaulterStatus(studentId, isDefaulter) {
+    setStudentDefaulterStatus(studentId, isDefaulter);
+    const student = appData.students.find(item => String(item.id) === String(studentId));
+    if (student) {
+        student.is_defaulter = Boolean(isDefaulter);
+    }
+    if (typeof renderDefaultersPage === 'function') {
+        renderDefaultersPage();
+    }
+    renderStudentsTable();
 }
 
 function loadScheduleData() {
@@ -108,22 +142,27 @@ function renderStudentsTable() {
     const searchValue = (searchState.students || '').toLowerCase();
     const filteredStudents = (appData.students || []).filter(student => {
         if (!searchValue) return true;
-        const searchable = [student.id, student.name, student.email, student.fee_status ? 'paid' : 'unpaid'];
+        const searchable = [student.id, student.name, student.email, student.fee_status ? 'paid' : 'unpaid', student.is_defaulter ? 'defaulter' : ''];
         return searchable.some(value => String(value || '').toLowerCase().includes(searchValue));
     });
 
     if (!filteredStudents.length) {
-        tbody.innerHTML = `<tr><td colspan="5" class="no-data">No students found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data">No students found</td></tr>`;
         return;
     }
 
     tbody.innerHTML = filteredStudents.map(student => {
         const paid = Boolean(student.fee_status);
         return `<tr>
-            <td>${escapeHTML(student.id)}</td>
+            <td>${escapeHTML(String(student.id).padStart(4, '0'))}</td>
             <td>${escapeHTML(student.name)}</td>
             <td>${escapeHTML(student.email)}</td>
             <td><span class="fee-pill ${paid ? 'paid' : 'unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
+            <td>
+                <span style="${student.is_defaulter ? 'color: #ef4444; font-weight: bold; background: #fee2e2; padding: 4px 8px; border-radius: 4px;' : 'color: #9ca3af;'}">
+                    ${student.is_defaulter ? 'Defaulter' : '-'}
+                </span>
+            </td>
             <td class="action-cell">
                 <label class="fee-toggle">
                     <input type="checkbox" data-student-id="${student.id}" ${paid ? 'checked' : ''} onchange="toggleStudentFeeStatus('${student.id}', this.checked)" />
@@ -212,7 +251,7 @@ function renderOverviewPage() {
         const course = appData.courses.find(item => String(item.id) === String(scheduleEntry?.course_id)) || {};
 
         return {
-            school: 'Bright Future School',
+            school: 'SZABIST',
             section: section.section_name || '-',
             studentIds: studentIds.length ? studentIds.join(', ') : 'No students',
             className: section.section_name || '-',
@@ -274,7 +313,8 @@ async function loadAllData() {
     appData.enrollments = await fetchFromBackend('/enrollments');
     appData.students = appData.students.map(student => ({
         ...student,
-        fee_status: getStudentFeeStatus(student.id)
+        fee_status: getStudentFeeStatus(student.id),
+        is_defaulter: getStudentDefaulterStatus(student.id)
     }));
     loadScheduleData();
     updateDashboard();
@@ -557,10 +597,14 @@ function escapeHTML(str) {
     });
 }
 
-function formatTableValue(column, value) {
+function formatTableValue(column, value, page) {
     if (value === null || value === undefined) return '-';
     if (typeof value === 'string' && /^(date_of_birth|enrollment_date)$/.test(column)) {
         return escapeHTML(value.split('T')[0]);
+    }
+    if (column === 'id') {
+        if (page === 'students') return String(value).padStart(4, '0');
+        if (page === 'instructors') return String(value).padStart(3, '0');
     }
     return escapeHTML(value);
 }
@@ -581,7 +625,7 @@ function renderTableRows(data, columns, tableBodyId, page) {
 
     tbody.innerHTML = filteredData.map(row => {
         return `<tr>
-            ${columns.map(col => `<td>${formatTableValue(col, row[col])}</td>`).join('')}
+            ${columns.map(col => `<td>${formatTableValue(col, row[col], page)}</td>`).join('')}
             <td class="action-cell">
                 <button class="edit-btn" onclick="editRecord('${row.id}', '${page}')">Edit</button>
                 <button class="delete-btn" onclick="deleteRecord('${row.id}', '${page}')">Delete</button>
@@ -605,40 +649,53 @@ function clearEditState() {
 function editRecord(id, page) {
     editState.page = page;
     editState.id = id;
-    const row = appData[page].find(item => item.id === id);
+    const row = appData[page].find(item => String(item.id) === String(id));
     if (!row) return;
 
     if (page === 'students') {
+        const idField = document.getElementById('student-id');
+        if (idField) {
+            idField.value = row.id || '';
+            idField.disabled = true; // Cannot edit ID
+        }
         document.getElementById('student-name').value = row.name || '';
         document.getElementById('student-email').value = row.email || '';
         document.getElementById('student-gender').value = row.gender || '';
-        document.getElementById('student-dob').value = row.date_of_birth || '';
+        document.getElementById('student-dob').value = row.date_of_birth ? row.date_of_birth.split('T')[0] : '';
         toggleFormPanel('student-form-panel', true);
     }
     if (page === 'instructors') {
+        const idField = document.getElementById('instructor-id');
+        if (idField) { idField.value = row.id || ''; idField.disabled = true; }
         document.getElementById('instructor-name').value = row.name || '';
         document.getElementById('instructor-email').value = row.email || '';
         document.getElementById('instructor-gender').value = row.gender || '';
         toggleFormPanel('instructor-form-panel', true);
     }
     if (page === 'departments') {
+        const idField = document.getElementById('department-id');
+        if (idField) { idField.value = row.id || ''; idField.disabled = true; }
         document.getElementById('department-name').value = row.department_name || '';
         document.getElementById('department-building').value = row.building || '';
         toggleFormPanel('department-form-panel', true);
     }
     if (page === 'courses') {
+        const idField = document.getElementById('course-id');
+        if (idField) { idField.value = row.id || ''; idField.disabled = true; }
         document.getElementById('course-name').value = row.course_name || '';
         document.getElementById('course-description').value = row.description || '';
         document.getElementById('course-credits').value = row.credits || '';
         toggleFormPanel('course-form-panel', true);
     }
     if (page === 'enrollments') {
+        const idField = document.getElementById('enrollment-id');
+        if (idField) { idField.value = row.id || ''; idField.disabled = true; }
         populateDropdown('enrollment-student-id', appData.students, 'name', 'Select Student');
         populateDropdown('enrollment-course-id', appData.courses, 'course_name', 'Select Course');
         document.getElementById('enrollment-student-id').value = row.student_id || '';
         document.getElementById('enrollment-course-id').value = row.course_id || '';
         document.getElementById('enrollment-grade').value = row.grade || '';
-        document.getElementById('enrollment-date').value = row.enrollment_date || '';
+        document.getElementById('enrollment-date').value = row.enrollment_date ? row.enrollment_date.split('T')[0] : '';
         toggleFormPanel('enrollment-form-panel', true);
     }
 }
@@ -703,6 +760,9 @@ function showPage(pageName) {
         case 'overview':
             renderOverviewPage();
             break;
+        case 'defaulters':
+            renderDefaultersPage();
+            break;
         case 'students':
             renderStudentsTable();
             break;
@@ -727,6 +787,23 @@ function showPage(pageName) {
     }
 }
 
+
+
+function openAddForm(panelId, inputIds) {
+    clearEditState();
+    if (inputIds) {
+        inputIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.value = '';
+        });
+    }
+    toggleFormPanel(panelId, true);
+}
+
+function cancelForm(panelId) {
+    clearEditState();
+    toggleFormPanel(panelId, false);
+}
 
 function toggleFormPanel(panelId, show) {
     const panel = document.getElementById(panelId);
@@ -866,9 +943,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
 
-    document.getElementById('add-student-button')?.addEventListener('click', () => toggleFormPanel('student-form-panel', true));
+    document.getElementById('add-student-button')?.addEventListener('click', () => {
+        const idField = document.getElementById('student-id');
+        if (idField) idField.disabled = false;
+        openAddForm('student-form-panel', ['student-id', 'student-name', 'student-email', 'student-gender', 'student-dob']);
+    });
     document.getElementById('show-defaulters-button')?.addEventListener('click', showDefaultersList);
-    document.getElementById('student-cancel-button')?.addEventListener('click', () => toggleFormPanel('student-form-panel', false));
+    document.getElementById('student-cancel-button')?.addEventListener('click', () => cancelForm('student-form-panel'));
     document.getElementById('student-submit-button')?.addEventListener('click', () => {
         submitForm({
             endpoint: '/students',
@@ -876,20 +957,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             panelId: 'student-form-panel',
             label: 'Student',
             fields: [
+                { name: 'id', element: document.getElementById('student-id') },
                 { name: 'name', element: document.getElementById('student-name') },
                 { name: 'email', element: document.getElementById('student-email') },
                 { name: 'gender', element: document.getElementById('student-gender') },
                 { name: 'date_of_birth', element: document.getElementById('student-dob') }
             ],
             validation: (payload) => {
+                if (!editState.id) {
+                    if (!payload.id) return 'Student ID is required.';
+                    if (!/^\d{4}$/.test(payload.id)) return 'Student ID must be exactly 4 digits.';
+                }
                 if (!payload.name || !payload.email) return 'Student name and email are required.';
                 return null;
             }
         });
     });
 
-    document.getElementById('add-instructor-button')?.addEventListener('click', () => toggleFormPanel('instructor-form-panel', true));
-    document.getElementById('instructor-cancel-button')?.addEventListener('click', () => toggleFormPanel('instructor-form-panel', false));
+    document.getElementById('add-instructor-button')?.addEventListener('click', () => {
+        const idField = document.getElementById('instructor-id');
+        if (idField) idField.disabled = false;
+        openAddForm('instructor-form-panel', ['instructor-id', 'instructor-name', 'instructor-email', 'instructor-gender']);
+    });
+    document.getElementById('instructor-cancel-button')?.addEventListener('click', () => cancelForm('instructor-form-panel'));
     document.getElementById('instructor-submit-button')?.addEventListener('click', () => {
         submitForm({
             endpoint: '/instructors',
@@ -897,19 +987,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             panelId: 'instructor-form-panel',
             label: 'Instructor',
             fields: [
+                { name: 'id', element: document.getElementById('instructor-id') },
                 { name: 'name', element: document.getElementById('instructor-name') },
                 { name: 'email', element: document.getElementById('instructor-email') },
                 { name: 'gender', element: document.getElementById('instructor-gender') }
             ],
             validation: (payload) => {
+                if (!editState.id) {
+                    if (!payload.id) return 'Instructor ID is required.';
+                    if (!/^\d{3}$/.test(payload.id)) return 'Instructor ID must be exactly 3 digits.';
+                }
                 if (!payload.name || !payload.email) return 'Instructor name and email are required.';
                 return null;
             }
         });
     });
 
-    document.getElementById('add-department-button')?.addEventListener('click', () => toggleFormPanel('department-form-panel', true));
-    document.getElementById('department-cancel-button')?.addEventListener('click', () => toggleFormPanel('department-form-panel', false));
+    document.getElementById('add-department-button')?.addEventListener('click', () => {
+        const idField = document.getElementById('department-id');
+        if (idField) idField.disabled = false;
+        openAddForm('department-form-panel', ['department-id', 'department-name', 'department-building']);
+    });
+    document.getElementById('department-cancel-button')?.addEventListener('click', () => cancelForm('department-form-panel'));
     document.getElementById('department-submit-button')?.addEventListener('click', () => {
         submitForm({
             endpoint: '/departments',
@@ -917,6 +1016,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             panelId: 'department-form-panel',
             label: 'Department',
             fields: [
+                { name: 'id', element: document.getElementById('department-id') },
                 { name: 'department_name', element: document.getElementById('department-name') },
                 { name: 'building', element: document.getElementById('department-building') }
             ],
@@ -927,8 +1027,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    document.getElementById('add-course-button')?.addEventListener('click', () => toggleFormPanel('course-form-panel', true));
-    document.getElementById('course-cancel-button')?.addEventListener('click', () => toggleFormPanel('course-form-panel', false));
+    document.getElementById('add-course-button')?.addEventListener('click', () => {
+        const idField = document.getElementById('course-id');
+        if (idField) idField.disabled = false;
+        openAddForm('course-form-panel', ['course-id', 'course-name', 'course-description', 'course-credits']);
+    });
+    document.getElementById('course-cancel-button')?.addEventListener('click', () => cancelForm('course-form-panel'));
     document.getElementById('course-submit-button')?.addEventListener('click', () => {
         submitForm({
             endpoint: '/courses',
@@ -936,6 +1040,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             panelId: 'course-form-panel',
             label: 'Course',
             fields: [
+                { name: 'id', element: document.getElementById('course-id') },
                 { name: 'course_name', element: document.getElementById('course-name') },
                 { name: 'description', element: document.getElementById('course-description') },
                 { name: 'credits', element: document.getElementById('course-credits') }
@@ -948,12 +1053,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('add-enrollment-button')?.addEventListener('click', () => {
+        const idField = document.getElementById('enrollment-id');
+        if (idField) idField.disabled = false;
+        openAddForm('enrollment-form-panel', ['enrollment-id', 'enrollment-student-id', 'enrollment-course-id', 'enrollment-grade']);
         populateDropdown('enrollment-student-id', appData.students, 'name', 'Select Student');
         populateDropdown('enrollment-course-id', appData.courses, 'course_name', 'Select Course');
         document.getElementById('enrollment-date').value = new Date().toISOString().split('T')[0];
-        toggleFormPanel('enrollment-form-panel', true);
     });
-    document.getElementById('enrollment-cancel-button')?.addEventListener('click', () => toggleFormPanel('enrollment-form-panel', false));
+    document.getElementById('enrollment-cancel-button')?.addEventListener('click', () => cancelForm('enrollment-form-panel'));
     document.getElementById('enrollment-submit-button')?.addEventListener('click', () => {
         submitForm({
             endpoint: '/enrollments',
@@ -961,6 +1068,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             panelId: 'enrollment-form-panel',
             label: 'Enrollment',
             fields: [
+                { name: 'id', element: document.getElementById('enrollment-id') },
                 { name: 'student_id', element: document.getElementById('enrollment-student-id') },
                 { name: 'course_id', element: document.getElementById('enrollment-course-id') },
                 { name: 'grade', element: document.getElementById('enrollment-grade') },
@@ -1000,4 +1108,81 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const initialPage = document.querySelector('.page')?.id || 'dashboard';
     showPage(initialPage);
+});
+
+
+// --- DEFAULTERS PAGE LOGIC ---
+function renderDefaultersPage() {
+    const unpaidTbody = document.getElementById('unpaid-students-body');
+    const defaultersTbody = document.getElementById('defaulters-body');
+    if (!unpaidTbody || !defaultersTbody) return;
+
+    const searchVal = (document.getElementById('defaulters-search')?.value || '').toLowerCase();
+
+    // Unpaid Students (Not marked as defaulters yet)
+    const unpaidStudents = (appData.students || []).filter(s => s.fee_status === false && s.is_defaulter !== true && (
+        String(s.name).toLowerCase().includes(searchVal) || 
+        String(s.id).toLowerCase().includes(searchVal) ||
+        String(s.email).toLowerCase().includes(searchVal)
+    ));
+
+    // Defaulters List
+    const defaulterStudents = (appData.students || []).filter(s => s.is_defaulter === true && (
+        String(s.name).toLowerCase().includes(searchVal) || 
+        String(s.id).toLowerCase().includes(searchVal) ||
+        String(s.email).toLowerCase().includes(searchVal)
+    ));
+
+    if (unpaidStudents.length === 0) {
+        unpaidTbody.innerHTML = '<tr><td colspan="4" class="no-data">No unpaid students found</td></tr>';
+    } else {
+        unpaidTbody.innerHTML = unpaidStudents.map(student => `
+            <tr>
+                <td>${escapeHTML(String(student.id).padStart(4, '0'))}</td>
+                <td>${escapeHTML(student.name)}</td>
+                <td>${escapeHTML(student.email)}</td>
+                <td class="action-cell">
+                    <label class="fee-toggle" style="border-color: #e5e7eb;">
+                        <input type="checkbox" onchange="toggleStudentDefaulterStatus('${student.id}', this.checked)" />
+                        <span>Tick to Default</span>
+                    </label>
+                    <button class="primary-btn" onclick="toggleStudentFeeStatus('${student.id}', true)">
+                        <i class="fa-solid fa-check"></i> Paid
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    if (defaulterStudents.length === 0) {
+        defaultersTbody.innerHTML = '<tr><td colspan="4" class="no-data">No defaulters</td></tr>';
+    } else {
+        defaultersTbody.innerHTML = defaulterStudents.map(student => `
+            <tr>
+                <td>${escapeHTML(String(student.id).padStart(4, '0'))}</td>
+                <td>${escapeHTML(student.name)}</td>
+                <td>${escapeHTML(student.email)}</td>
+                <td class="action-cell">
+                    <label class="fee-toggle" style="border-color: #ef4444;">
+                        <input type="checkbox" checked onchange="toggleStudentDefaulterStatus('${student.id}', this.checked)" />
+                        <span style="color: #ef4444; font-weight: bold;">Defaulter</span>
+                    </label>
+                    <button class="primary-btn" onclick="toggleStudentFeeStatus('${student.id}', true); toggleStudentDefaulterStatus('${student.id}', false);">
+                        <i class="fa-solid fa-check"></i> Paid
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const defaultersSearch = document.getElementById('defaulters-search');
+    if (defaultersSearch) {
+        defaultersSearch.addEventListener('input', () => {
+            if (document.querySelector('.page.active')?.id === 'defaulters') {
+                renderDefaultersPage();
+            }
+        });
+    }
 });
