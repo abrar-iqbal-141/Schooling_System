@@ -5,18 +5,14 @@
    ```bash
    cd Backend
    ```
-2. Install packages:
-   ```bash
-   npm install
-   ```
-3. Start backend & frontend:
+
+2. Start backend & frontend:
    ```bash
    npm start
    ```
 4. Open your browser:
    ```text
-   http://localhost:5000
-   ```
+   Start-Process "http://localhost:5000/Dashboard/index.html"
 
 ## Save to GitHub
 Run these commands to save your work:
